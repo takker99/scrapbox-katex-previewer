@@ -69,8 +69,10 @@ ${popupStyle}`}
   );
 };
 
-const app = document.createElement("div");
-app.dataset.userscriptName = "katex-previewer";
-document.getElementById("editor")!.append(app);
-const shadowRoot = app.attachShadow({ mode: "open" });
-render(<App />, shadowRoot);
+export function mount() {
+  const app = document.createElement("div");
+  app.dataset.userscriptName = "katex-previewer";
+  document.getElementById("editor")!.append(app);
+  const shadowRoot = app.attachShadow({ mode: "open" });
+  render(<App />, shadowRoot);
+}
