@@ -21,7 +21,7 @@ const App = () => {
     const {
       elements,
       cursor: { left },
-      editor: { top: editorTop, left: editorLeft },
+      editor,
     } = positions;
     const formulaDOM = elements.find((element) =>
       element.tagName === "CODE" &&
@@ -37,8 +37,8 @@ const App = () => {
     // popupを出すy座標は、[$ ]の上端に合わせる
     const { top: formulaTop } = formulaDOM.getBoundingClientRect();
     setCursor({
-      top: formulaTop - editorTop,
-      left: left - editorLeft,
+      top: formulaTop - editor.top,
+      left: left - editor.left,
     });
   }, [positions]);
 
