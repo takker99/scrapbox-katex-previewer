@@ -2,7 +2,7 @@
 /// <reference lib="esnext" />
 /// <reference lib="dom" />
 import { useEffect, useRef, useState } from "./deps/preact.tsx";
-import { importKaTeX, katex } from "./deps/katex.ts";
+import { importKaTeX, KatexOptions } from "./deps/katex.ts";
 
 export interface ParseError {
   name: string;
@@ -10,7 +10,7 @@ export interface ParseError {
   position: number;
 }
 
-export function useKaTeX(_formula: string) {
+export function useKaTeX(_formula: string, options: KatexOptions = {}) {
   const ref = useRef<HTMLElement>(null);
   const [formula, setFormula] = useState(_formula);
   const [error, setError] = useState<string>("");
@@ -20,11 +20,12 @@ export function useKaTeX(_formula: string) {
       const { render } = await importKaTeX();
       if (!ref.current) return;
       try {
-        render(formula, ref.current);
+        render(formula, ref.current, options);
         setError("");
       } catch (e) {
         if (e instanceof Error && e.name === "ParseError") {
-          setError(e.message);
+          // remove an unnecessary token
+          setError(e.message.slice("KaTeX parse error: ".length));
         } else {
           throw e;
         }
