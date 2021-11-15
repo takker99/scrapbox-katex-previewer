@@ -2,12 +2,13 @@
 /** @jsxFrag Fragment */
 import { Fragment, h, render, useEffect, useState } from "./deps/preact.tsx";
 import { useKaTeX } from "./useKaTeX.ts";
+import type { KatexOptions } from "./deps/katex.ts";
 import { version } from "./deps/katex.ts";
 import { PopupContainer, style as popupStyle } from "./PopupContainer.tsx";
 import { useCursorObserver } from "./useCursorObserver.ts";
 
-const App = ({ throwOnError = false }) => {
-  const { ref, error, setFormula } = useKaTeX("", { throwOnError }); // 数式rendering用hook
+const App = (props: KatexOptions) => {
+  const { ref, error, setFormula } = useKaTeX("", props); // 数式rendering用hook
   const [open, setOpen] = useState(false); // popupの開閉
   const [cursor, setCursor] = useState({
     top: 0,
@@ -72,7 +73,7 @@ ${popupStyle}`}
   );
 };
 
-export function mount({ throwOnError = false }) {
+export function mount({ throwOnError = false } = {}) {
   const app = document.createElement("div");
   app.dataset.userscriptName = "katex-previewer";
   document.getElementById("editor")!.append(app);
