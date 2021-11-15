@@ -23,7 +23,7 @@ export function useKaTeX(_formula: string) {
         render(formula, ref.current);
         setError(undefined);
       } catch (e) {
-        if (e instanceof katex.ParseError) {
+        if (e.name === "ParseError") {
           setError(e);
           return;
         }
