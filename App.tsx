@@ -24,8 +24,11 @@ const App = () => {
       editor,
     } = positions;
     const formulaDOM = elements.find((element) =>
-      element.tagName === "CODE" &&
-      element.nextElementSibling?.classList?.contains("preview")
+      (
+        element.tagName === "CODE" &&
+        element.nextElementSibling?.classList?.contains("preview")
+      ) ||
+      element.matches(".formula.error")
     );
     if (!formulaDOM) {
       setOpen(false);
