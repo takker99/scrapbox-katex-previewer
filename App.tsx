@@ -6,8 +6,8 @@ import { version } from "./deps/katex.ts";
 import { PopupContainer, style as popupStyle } from "./PopupContainer.tsx";
 import { useCursorObserver } from "./useCursorObserver.ts";
 
-const App = () => {
-  const { ref, error, setFormula } = useKaTeX(""); // 数式rendering用hook
+const App = ({ throwOnError = false }) => {
+  const { ref, error, setFormula } = useKaTeX("", { throwOnError }); // 数式rendering用hook
   const [open, setOpen] = useState(false); // popupの開閉
   const [cursor, setCursor] = useState({
     top: 0,
@@ -72,10 +72,10 @@ ${popupStyle}`}
   );
 };
 
-export function mount() {
+export function mount({ throwOnError = false }) {
   const app = document.createElement("div");
   app.dataset.userscriptName = "katex-previewer";
   document.getElementById("editor")!.append(app);
   const shadowRoot = app.attachShadow({ mode: "open" });
-  render(<App />, shadowRoot);
+  render(<App throwOnError={throwOnError} />, shadowRoot);
 }
