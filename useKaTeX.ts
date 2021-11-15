@@ -24,7 +24,8 @@ export function useKaTeX(_formula: string, options: KatexOptions = {}) {
         setError("");
       } catch (e) {
         if (e instanceof Error && e.name === "ParseError") {
-          setError(e.message);
+          // remove an unnecessary token
+          setError(e.message.slice("KaTeX parse error: ".length));
         } else {
           throw e;
         }
