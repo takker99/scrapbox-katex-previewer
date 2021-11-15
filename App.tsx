@@ -73,10 +73,16 @@ ${popupStyle}`}
   );
 };
 
-export function mount({ throwOnError = false } = {}) {
+export type MountOptions = {
+  throwOnError?: boolean;
+};
+export function mount(options?: MountOptions) {
+  const { throwOnError = false } = options ?? {};
+
   const app = document.createElement("div");
   app.dataset.userscriptName = "katex-previewer";
   document.getElementById("editor")!.append(app);
   const shadowRoot = app.attachShadow({ mode: "open" });
+
   render(<App throwOnError={throwOnError} />, shadowRoot);
 }
