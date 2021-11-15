@@ -13,7 +13,7 @@ export interface ParseError {
 export function useKaTeX(_formula: string) {
   const ref = useRef<HTMLElement>(null);
   const [formula, setFormula] = useState(_formula);
-  const [error, setError] = useState<ParseError | undefined>(undefined);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     (async () => {
@@ -21,13 +21,13 @@ export function useKaTeX(_formula: string) {
       if (!ref.current) return;
       try {
         render(formula, ref.current);
-        setError(undefined);
+        setError("");
       } catch (e) {
-        if (e instanceof katex.ParseError) {
-          setError(e);
-          return;
+        if (e instanceof Error && e.name === "ParseError") {
+          setError(e.message);
+        } else {
+          throw e;
         }
-        throw e;
       }
     })();
   }, [formula]);
