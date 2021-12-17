@@ -173,18 +173,17 @@ export namespace katex {
 
 // This is an original code below
 export const version = "0.13.3";
+let initialized: Promise<void> | undefined;
 export function importKaTeX(): Promise<Window["katex"]> {
   const url =
     `https://cdnjs.cloudflare.com/ajax/libs/KaTeX/${version}/katex.min.js`;
-  if (document.querySelector(`script[src="${url}"]`)) {
-    return Promise.resolve(window.katex);
-  }
 
   const script = document.createElement("script");
   script.src = url;
-  return new Promise((resolve, reject) => {
+  initialized ??= new Promise((resolve, reject) => {
     script.onload = () => resolve(window.katex);
     script.onerror = (e) => reject(e);
     document.head.append(script);
   });
+  return initialized;
 }
