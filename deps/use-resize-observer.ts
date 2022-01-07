@@ -1,4 +1,7 @@
-// copied from https://github.com/ZeeCoder/use-resize-observer/blob/v8.0.0/src/index.ts
+// ported from https://github.com/ZeeCoder/use-resize-observer/blob/v8.0.0/src/index.ts
+// and modified:
+// - import path
+// - the comment of `ts-ignore`
 import {
   RefCallback,
   RefObject,
@@ -154,7 +157,7 @@ const extractSize = (
   // A couple bytes smaller than calling Array.isArray() and just as effective here.
   return entry[boxProp][0] ? entry[boxProp][0][sizeType] : // TS complains about this, because the RO entry type follows the spec and does not reflect Firefox's current
   // behaviour of returning objects instead of arrays for `borderBoxSize` and `contentBoxSize`.
-  // @ts-ignore
+  // @ts-ignore see above
     entry[boxProp][sizeType];
 };
 
