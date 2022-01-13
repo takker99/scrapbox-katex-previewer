@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "https://esm.sh/preact@10.5.14/": "https://esm.sh/preact@10.5.15/",
+    "https://esm.sh/preact@10.5.14": "https://esm.sh/preact@10.5.15"
+  }
+}

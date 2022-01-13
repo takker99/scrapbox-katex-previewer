@@ -8,16 +8,16 @@ export {
   h,
   render,
   toChildArray,
-} from "https://esm.sh/preact@10.5.14";
+} from "https://esm.sh/preact@10.6.4";
 export type {
   ComponentChildren,
   RefCallback,
   RefObject,
-} from "https://esm.sh/preact@10.5.14";
+} from "https://esm.sh/preact@10.6.4";
 export {
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
-} from "https://esm.sh/preact@10.5.14/hooks";
+} from "https://esm.sh/preact@10.6.4/hooks";
