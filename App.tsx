@@ -6,6 +6,11 @@ import type { KatexOptions } from "./deps/katex.ts";
 import { version } from "./deps/katex.ts";
 import { PopupContainer, style as popupStyle } from "./PopupContainer.tsx";
 import { useCursorObserver } from "./useCursorObserver.ts";
+import {
+  cursor as cursorDOM,
+  editor,
+  getCharDOM,
+} from "./deps/scrapbox-std.ts";
 
 const App = (props: KatexOptions) => {
   const { ref, error, setFormula } = useKaTeX("", props); // 数式rendering用hook
@@ -14,23 +19,20 @@ const App = (props: KatexOptions) => {
     top: 0,
     left: 0,
   }); // cursorの位置
-  const positions = useCursorObserver();
+  const { line, char } = useCursorObserver();
 
   // .formula内にcursorが来たらpreviewを開始する
   useEffect(() => {
-    if (!positions) return;
-    const {
-      elements,
-      cursor: { left },
-      editor,
-    } = positions;
-    const formulaDOM = elements.find((element) =>
-      (
-        element.tagName === "CODE" &&
-        element.nextElementSibling?.classList?.contains("preview")
-      ) ||
-      element.matches(".formula.error")
-    );
+    const charDOM = getCharDOM(line, char);
+    if (!charDOM) {
+      setOpen(false);
+      return;
+    }
+    // TODO: wanna replace `getFormulaDOM()`
+    const code = charDOM.closest("code");
+    const formulaDOM = code?.nextElementSibling?.classList?.contains("preview")
+      ? code
+      : charDOM.closest(".formula.error");
     if (!formulaDOM) {
       setOpen(false);
       return;
@@ -40,11 +42,14 @@ const App = (props: KatexOptions) => {
 
     // popupを出すy座標は、[$ ]の上端に合わせる
     const { top: formulaTop } = formulaDOM.getBoundingClientRect();
+    const { top, left } = editor()?.getBoundingClientRect?.() ??
+      { top: 0, left: 0 };
+    const cursorLeft = cursorDOM()?.getBoundingClientRect?.()?.left ?? 0;
     setCursor({
-      top: formulaTop - editor.top,
-      left: left - editor.left,
+      top: formulaTop - top,
+      left: cursorLeft - left,
     });
-  }, [positions]);
+  }, [line, char]);
 
   return (
     <>
@@ -81,7 +86,7 @@ export function mount(options?: MountOptions) {
 
   const app = document.createElement("div");
   app.dataset.userscriptName = "katex-previewer";
-  document.getElementById("editor")!.append(app);
+  editor()!.append(app);
   const shadowRoot = app.attachShadow({ mode: "open" });
 
   render(<App throwOnError={throwOnError} />, shadowRoot);
