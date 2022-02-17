@@ -29,10 +29,7 @@ const App = (props: KatexOptions) => {
       return;
     }
     // TODO: wanna replace `getFormulaDOM()`
-    const code = charDOM.closest("code");
-    const formulaDOM = code?.nextElementSibling?.classList?.contains("preview")
-      ? code
-      : charDOM.closest(".formula.error");
+    const formulaDOM = charDOM.closest(".cursor-line span.formula");
     if (!formulaDOM) {
       setOpen(false);
       return;
