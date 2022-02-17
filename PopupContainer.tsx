@@ -2,7 +2,7 @@
 /** @jsxFrag Fragment */
 import { ComponentChildren, h, toChildArray, useMemo } from "./deps/preact.tsx";
 import useResizeObserver from "./deps/use-resize-observer.ts";
-import { editor } from "./dom.ts";
+import { editor } from "./deps/scrapbox-std.ts";
 
 type Props = {
   open: boolean;
