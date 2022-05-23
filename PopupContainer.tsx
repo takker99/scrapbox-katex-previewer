@@ -1,6 +1,12 @@
 /** @jsx h */
 /** @jsxFrag Fragment */
-import { ComponentChildren, h, toChildArray, useMemo } from "./deps/preact.tsx";
+import {
+  ComponentChildren,
+  FunctionComponent,
+  h,
+  toChildArray,
+  useMemo,
+} from "./deps/preact.tsx";
 import useResizeObserver from "./deps/use-resize-observer.ts";
 import { editor } from "./deps/scrapbox-std.ts";
 
@@ -13,7 +19,9 @@ type CursorPosition = {
   left: number;
 };
 
-export function PopupContainer({ top, left, open, children }: Props) {
+export const PopupContainer: FunctionComponent<Props> = (
+  { top, left, open, children },
+) => {
   const cursorPosition = useMemo(
     () => ({ top, left }),
     [top, left],
@@ -43,7 +51,7 @@ export function PopupContainer({ top, left, open, children }: Props) {
       <div class="triangle" style={triangleStyle} />
     </div>
   );
-}
+};
 
 export const style = `
 .popup-menu {
@@ -106,12 +114,12 @@ const calcTriangleStyle = (
 });
 
 /** .button-container のスタイルを計算する */
-function calcButtonContainerStyle(
+const calcButtonContainerStyle = (
   editorWidth: number,
   buttonContainerWidth: number,
   cursorPosition: CursorPosition,
   isEmpty: boolean,
-) {
+): h.JSX.CSSProperties => {
   const translateX = (cursorPosition.left / editorWidth) * 100;
   // 端に寄り過ぎないように、translateX の上限・下限を設定しておく。
   // 値はフィーリングで決めており、何かに裏打ちされたものではないので、変えたかったら適当に変える。
@@ -134,4 +142,4 @@ function calcButtonContainerStyle(
       }
       : {}),
   };
-}
+};
