@@ -1,7 +1,13 @@
 /// <reference no-default-lib="true" />
 /// <reference lib="esnext" />
 /// <reference lib="dom" />
-import { useEffect, useRef, useState } from "./deps/preact.tsx";
+import {
+  Ref,
+  StateUpdater,
+  useEffect,
+  useRef,
+  useState,
+} from "./deps/preact.tsx";
 import { importKaTeX, KatexOptions } from "./deps/katex.ts";
 
 export interface ParseError {
@@ -10,7 +16,16 @@ export interface ParseError {
   position: number;
 }
 
-export function useKaTeX(_formula: string, options: KatexOptions = {}) {
+export interface UseKaTeXResult {
+  ref: Ref<HTMLElement>;
+  error: string;
+  setFormula: StateUpdater<string>;
+}
+
+export const useKaTeX = (
+  _formula: string,
+  options: KatexOptions = {},
+): UseKaTeXResult => {
   const ref = useRef<HTMLElement>(null);
   const [formula, setFormula] = useState(_formula);
   const [error, setError] = useState<string>("");
@@ -34,4 +49,4 @@ export function useKaTeX(_formula: string, options: KatexOptions = {}) {
   }, [formula]);
 
   return { ref, error, setFormula };
-}
+};

@@ -78,7 +78,7 @@ ${popupStyle}`}
 export type MountOptions = {
   throwOnError?: boolean;
 };
-export function mount(options?: MountOptions) {
+export const mount = (options?: MountOptions): void => {
   const { throwOnError = false } = options ?? {};
 
   const app = document.createElement("div");
@@ -87,4 +87,4 @@ export function mount(options?: MountOptions) {
   const shadowRoot = app.attachShadow({ mode: "open" });
 
   render(<App throwOnError={throwOnError} />, shadowRoot);
-}
+};

@@ -21,3 +21,4 @@ export {
   useRef,
   useState,
 } from "https://esm.sh/preact@10.6.4/hooks";
+export type { Ref, StateUpdater } from "https://esm.sh/preact@10.6.4/hooks";
