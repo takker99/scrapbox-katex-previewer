@@ -10,7 +10,7 @@ export interface Rect {
   width: number;
   height: number;
 }
-export function useCursorObserver() {
+export const useCursorObserver = () => {
   const listenMutations = useMutationObserver(cursor()!, {
     attributes: true,
     attributeFilter: ["style"],
@@ -27,4 +27,4 @@ export function useCursorObserver() {
   }, []);
 
   return position;
-}
+};
