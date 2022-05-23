@@ -11,6 +11,7 @@ export {
 } from "https://esm.sh/preact@10.6.4";
 export type {
   ComponentChildren,
+  FunctionComponent,
   RefCallback,
   RefObject,
 } from "https://esm.sh/preact@10.6.4";
