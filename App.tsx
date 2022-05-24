@@ -5,7 +5,7 @@ import { useKaTeX } from "./useKaTeX.ts";
 import type { KatexOptions } from "./deps/katex.ts";
 import { version } from "./deps/katex.ts";
 import { PopupContainer, style as popupStyle } from "./PopupContainer.tsx";
-import { useCursorObserver } from "./useCursorObserver.ts";
+import { useCaretPosition } from "./useCaretPosition.ts";
 import {
   cursor as cursorDOM,
   editor,
@@ -19,7 +19,7 @@ const App = (props: KatexOptions) => {
     top: 0,
     left: 0,
   }); // cursorの位置
-  const { line, char } = useCursorObserver();
+  const { line, char } = useCaretPosition();
 
   // .formula内にcursorが来たらpreviewを開始する
   useEffect(() => {
