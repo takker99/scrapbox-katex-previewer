@@ -176,11 +176,25 @@ export namespace katex {
 // This is an original code below
 const defaultVersion = "0.13.3";
 let initialized: Promise<Katex> | undefined;
-export const importKaTeX = (
+export const importKaTeX = async (
   version = defaultVersion,
 ): Promise<Katex> => {
   const url =
     `https://cdnjs.cloudflare.com/ajax/libs/KaTeX/${version}/katex.min.js`;
+
+  // すでに<script>が作られていた場合は、`window.katex`が生えるまで待つ
+  if (document.querySelector(`script[src="${url}"]`)) {
+    if (window.katex !== undefined) {
+      return Promise.resolve(window.katex);
+    }
+    return await new Promise<Katex>((resolve) => {
+      const timer = setInterval(() => {
+        if (window.katex !== undefined) return;
+        clearInterval(timer);
+        resolve(window.katex);
+      }, 500);
+    });
+  }
 
   const script = document.createElement("script");
   script.src = url;
@@ -189,6 +203,8 @@ export const importKaTeX = (
     script.onerror = (e) => reject(e);
     document.head.append(script);
   });
+
   return initialized;
 };
+
 export { defaultVersion as version };
