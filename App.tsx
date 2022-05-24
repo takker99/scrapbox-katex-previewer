@@ -6,6 +6,7 @@ import type { KatexOptions } from "./deps/katex.ts";
 import { version } from "./deps/katex.ts";
 import { PopupContainer, style as popupStyle } from "./PopupContainer.tsx";
 import { useCaretPosition } from "./useCaretPosition.ts";
+import { useLayout } from "./useLayout.ts";
 import {
   cursor as cursorDOM,
   editor,
@@ -20,9 +21,16 @@ const App = (props: KatexOptions) => {
     left: 0,
   }); // cursorの位置
   const { line, char } = useCaretPosition();
+  const layout = useLayout();
 
   // .formula内にcursorが来たらpreviewを開始する
   useEffect(() => {
+    // 編集画面以外では起動しない
+    if (layout !== "page") {
+      setOpen(false);
+      return;
+    }
+
     const charDOM = getCharDOM(line, char);
     if (!charDOM) {
       setOpen(false);
@@ -46,7 +54,7 @@ const App = (props: KatexOptions) => {
       top: formulaTop - top,
       left: cursorLeft - left,
     });
-  }, [line, char]);
+  }, [line, char, layout]);
 
   return (
     <>
