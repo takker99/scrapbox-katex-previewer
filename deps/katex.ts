@@ -133,30 +133,32 @@ export interface KatexOptions {
   globalGroup?: boolean | undefined;
 }
 
+export interface Katex {
+  /**
+   * Renders a TeX expression into the specified DOM element
+   * @param tex A TeX expression
+   * @param element The DOM element to render into
+   * @param options KaTeX options
+   */
+  render(
+    tex: string,
+    element: HTMLElement,
+    options?: KatexOptions,
+  ): void;
+  /**
+   * Renders a TeX expression into an HTML string
+   * @param tex A TeX expression
+   * @param options KaTeX options
+   */
+  renderToString(
+    tex: string,
+    options?: KatexOptions,
+  ): string;
+}
+
 declare global {
   interface Window {
-    katex: {
-      /**
-       * Renders a TeX expression into the specified DOM element
-       * @param tex A TeX expression
-       * @param element The DOM element to render into
-       * @param options KaTeX options
-       */
-      render(
-        tex: string,
-        element: HTMLElement,
-        options?: KatexOptions,
-      ): void;
-      /**
-       * Renders a TeX expression into an HTML string
-       * @param tex A TeX expression
-       * @param options KaTeX options
-       */
-      renderToString(
-        tex: string,
-        options?: KatexOptions,
-      ): string;
-    };
+    katex: Katex;
   }
 }
 
@@ -173,10 +175,10 @@ export namespace katex {
 
 // This is an original code below
 const defaultVersion = "0.13.3";
-let initialized: Promise<Window["katex"]> | undefined;
+let initialized: Promise<Katex> | undefined;
 export const importKaTeX = (
   version = defaultVersion,
-): Promise<Window["katex"]> => {
+): Promise<Katex> => {
   const url =
     `https://cdnjs.cloudflare.com/ajax/libs/KaTeX/${version}/katex.min.js`;
 
