@@ -133,30 +133,32 @@ export interface KatexOptions {
   globalGroup?: boolean | undefined;
 }
 
+export interface Katex {
+  /**
+   * Renders a TeX expression into the specified DOM element
+   * @param tex A TeX expression
+   * @param element The DOM element to render into
+   * @param options KaTeX options
+   */
+  render(
+    tex: string,
+    element: HTMLElement,
+    options?: KatexOptions,
+  ): void;
+  /**
+   * Renders a TeX expression into an HTML string
+   * @param tex A TeX expression
+   * @param options KaTeX options
+   */
+  renderToString(
+    tex: string,
+    options?: KatexOptions,
+  ): string;
+}
+
 declare global {
   interface Window {
-    katex: {
-      /**
-       * Renders a TeX expression into the specified DOM element
-       * @param tex A TeX expression
-       * @param element The DOM element to render into
-       * @param options KaTeX options
-       */
-      render(
-        tex: string,
-        element: HTMLElement,
-        options?: KatexOptions,
-      ): void;
-      /**
-       * Renders a TeX expression into an HTML string
-       * @param tex A TeX expression
-       * @param options KaTeX options
-       */
-      renderToString(
-        tex: string,
-        options?: KatexOptions,
-      ): string;
-    };
+    katex: Katex;
   }
 }
 
@@ -173,12 +175,26 @@ export namespace katex {
 
 // This is an original code below
 const defaultVersion = "0.13.3";
-let initialized: Promise<Window["katex"]> | undefined;
-export const importKaTeX = (
+let initialized: Promise<Katex> | undefined;
+export const importKaTeX = async (
   version = defaultVersion,
-): Promise<Window["katex"]> => {
+): Promise<Katex> => {
   const url =
     `https://cdnjs.cloudflare.com/ajax/libs/KaTeX/${version}/katex.min.js`;
+
+  // すでに<script>が作られていた場合は、`window.katex`が生えるまで待つ
+  if (document.querySelector(`script[src="${url}"]`)) {
+    if (window.katex !== undefined) {
+      return Promise.resolve(window.katex);
+    }
+    return await new Promise<Katex>((resolve) => {
+      const timer = setInterval(() => {
+        if (window.katex !== undefined) return;
+        clearInterval(timer);
+        resolve(window.katex);
+      }, 500);
+    });
+  }
 
   const script = document.createElement("script");
   script.src = url;
@@ -187,6 +203,8 @@ export const importKaTeX = (
     script.onerror = (e) => reject(e);
     document.head.append(script);
   });
+
   return initialized;
 };
+
 export { defaultVersion as version };
