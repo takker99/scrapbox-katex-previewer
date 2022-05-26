@@ -13,7 +13,51 @@ import {
   getCharDOM,
 } from "./deps/scrapbox-std.ts";
 
-const App = (props: KatexOptions) => {
+/** katex-previewerの有効/無効を切り替える函数を受け取るcallback
+ *
+ * @param enable previewerを有効にする
+ * @param disable previewerを無効にする
+ * @return (もし返すなら)useEffectに渡す後始末函数
+ */
+export type Controller = (
+  enable: () => void,
+  disable: () => void,
+) => (void | (() => void));
+
+/** `mount`に渡す初期化options*/
+export interface MountOptions {
+  /** 文法エラー箇所などの詳細なエラー内容を表示したいときは`true`を渡す
+   *
+   * @default false
+   */
+  throwOnError?: boolean;
+
+  /** katex-previewerの有効/無効を切り替える函数を受け取るcallback */
+  controller?: Controller;
+}
+
+/** katex-previewerを初期化する
+ *
+ * @param options 初期化options
+ */
+export const mount = (options?: MountOptions): void => {
+  const { throwOnError = false, controller = () => {} } = options ?? {};
+
+  const app = document.createElement("div");
+  app.dataset.userscriptName = "katex-previewer";
+  editor()!.append(app);
+  const shadowRoot = app.attachShadow({ mode: "open" });
+
+  render(
+    <App throwOnError={throwOnError} controller={controller} />,
+    shadowRoot,
+  );
+};
+
+interface Props extends KatexOptions {
+  controller: Controller;
+}
+const App = (props: Props) => {
   const { ref, error, setFormula } = useKaTeX("", props); // 数式rendering用hook
   const [open, setOpen] = useState(false); // popupの開閉
   const [cursor, setCursor] = useState({
@@ -56,6 +100,10 @@ const App = (props: KatexOptions) => {
     });
   }, [line, char, layout]);
 
+  useEffect(() => props.controller(() => setOpen(true), () => setOpen(false)), [
+    props.controller,
+  ]);
+
   return (
     <>
       <link
@@ -81,18 +129,4 @@ ${popupStyle}`}
       </PopupContainer>
     </>
   );
-};
-
-export type MountOptions = {
-  throwOnError?: boolean;
-};
-export const mount = (options?: MountOptions): void => {
-  const { throwOnError = false } = options ?? {};
-
-  const app = document.createElement("div");
-  app.dataset.userscriptName = "katex-previewer";
-  editor()!.append(app);
-  const shadowRoot = app.attachShadow({ mode: "open" });
-
-  render(<App throwOnError={throwOnError} />, shadowRoot);
 };
