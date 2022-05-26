@@ -60,6 +60,7 @@ interface Props extends KatexOptions {
 const App = (props: Props) => {
   const { ref, error, setFormula } = useKaTeX("", props); // 数式rendering用hook
   const [open, setOpen] = useState(false); // popupの開閉
+  const [enable, setEnable] = useState(true); // 有効無効切り替え
   const [cursor, setCursor] = useState({
     top: 0,
     left: 0,
@@ -69,6 +70,9 @@ const App = (props: Props) => {
 
   // .formula内にcursorが来たらpreviewを開始する
   useEffect(() => {
+    // 無効のときは何もしない
+    if (!enable) return;
+
     // 編集画面以外では起動しない
     if (layout !== "page") {
       setOpen(false);
@@ -98,11 +102,14 @@ const App = (props: Props) => {
       top: formulaTop - top,
       left: cursorLeft - left,
     });
-  }, [line, char, layout]);
+  }, [line, char, layout, enable]);
 
-  useEffect(() => props.controller(() => setOpen(true), () => setOpen(false)), [
-    props.controller,
-  ]);
+  useEffect(
+    () => props.controller(() => setEnable(true), () => setEnable(false)),
+    [
+      props.controller,
+    ],
+  );
 
   return (
     <>
