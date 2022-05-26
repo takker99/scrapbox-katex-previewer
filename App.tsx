@@ -130,7 +130,7 @@ const App = (props: Props) => {
 }
 ${popupStyle}`}
       </style>
-      <PopupContainer top={cursor.top} left={cursor.left} open={open}>
+      <PopupContainer top={cursor.top} left={cursor.left} open={open && enable}>
         {error && <span class="error">{error}</span>}
         <span class="katex-display" ref={ref} />
       </PopupContainer>
