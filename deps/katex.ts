@@ -189,7 +189,7 @@ export const importKaTeX = async (
     }
     return await new Promise<Katex>((resolve) => {
       const timer = setInterval(() => {
-        if (window.katex !== undefined) return;
+        if (window.katex === undefined) return;
         clearInterval(timer);
         resolve(window.katex);
       }, 500);
